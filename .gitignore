@@ -1,0 +1,8 @@
+.idea/*
+Java/out/*
+Java/build/*
+Java/nbproject/*
+
+*.in
+*.out
+*.exe
