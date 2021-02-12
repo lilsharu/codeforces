@@ -21,20 +21,19 @@ using vpd = vector<pd>;
 
 #define tcT template<class T
 #define tcTU tcT, class U
-
+// ^ lol this makes everything look weird but I'll try it
 tcT> using V = vector<T>;
 tcT, size_t SZ> using AR = array<T,SZ>;
 tcT> using PR = pair<T,T>;
 
 // pairs
-#define mp make_pair
 #define f first
-#define s second
 
 // easy endl
 #define endl '\n'
 
 // vectors
+// oops size(x), rbegin(x), rend(x) need C++17
 #define sz(x) int((x).size())
 #define bg(x) begin(x)
 #define all(x) bg(x), end(x)
@@ -53,12 +52,18 @@ tcT> using PR = pair<T,T>;
 tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
 
 // loops
-#define ffor(i,a,b) for (int i = (a); i < (b); ++i)
-#define ff0r(i,a) ffor(i,0,a)
-#define rrof(i,a,b) for (int i = (b)-1; i >= (a); --i)
-#define rr0f(i,a) rrof(i,0,a)
-#define fforn ff0r(i, n)
+#define FOR(i,a,b) for (int i = (a); i < (b); ++i)
+#define F0R(i,a) FOR(i,0,a)
+#define ROF(i,a,b) for (int i = (b)-1; i >= (a); --i)
+#define R0F(i,a) ROF(i,0,a)
 #define trav(a,x) for (auto& a: x)
+#define ffor(i,a,b) for (int i = (a); i < (b); ++i)
+#define ff0r(i,a) FOR(i,0,a)
+#define rrof(i,a,b) for (int i = (b)-1; i >= (a); --i)
+#define rr0f(i,a) ROF(i,0,a)
+#define trav(a,x) for (auto& a: x)
+#define fforn ff0r(i, n)
+#define FORN F0R(i, n)
 
 const int MOD = 1e9+7; // 998244353;
 const int MX = 2e5+5;
@@ -139,10 +144,10 @@ str ts(bool b) {
 tcT> str ts(complex<T> c) {
 	stringstream ss; ss << c; return ss.str(); }
 str ts(V<bool> v) {
-	str res = "{"; ff0r(i,sz(v)) res += char('0'+v[i]);
+	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
 	res += "}"; return res; }
 template<size_t SZ> str ts(bitset<SZ> b) {
-	str res = ""; ff0r(i, SZ) res += char('0'+b[i]);
+	str res = ""; F0R(i,SZ) res += char('0'+b[i]);
 	return res; }
 tcTU> str ts(pair<T,U> p);
 tcT> str ts(T v) { // containers with begin(), end()
@@ -203,43 +208,65 @@ void setIO(string s = "") {
 	// ex. try to read letter into int
 	if (sz(s)) { setIn(s+".in"), setOut(s+".out"); } // for USACO
 }
+
+// Given Length and Sum of Digits
+// Difficulty: 1400
  
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
-	int n, q, k;
-	re(n, q, k);
 
-	vi v(n + 1);
+	ll l, s;
+	cin >> l >> s;
 
-	ffor(i, 1, n + 1) {
-		cin >> v[i];
+	if (l * 9 < s || (s == 0 && l > 1)) { 
+		cout << -1 << ' ' << -1 << endl;
+		return 0;
 	}
 
-	vi gap(n + 1);
+	string a = "", b = "";
+	ll ai = 0, bi = 0;
 
-	ffor(i, 1, n + 1) {
-		gap[i - 1] = v[i] - v[i - 1] - 1;
-	} 
-	gap[n] = k - v[n];
-
-	vi tot(n + 1);
-
-	ff0r(i, n) {
-		tot[i + 1] = tot[i] + gap[i] + gap[i + 1];
+	if (s == 1) {
+		a += "1", b += "1";
+		while (--l) {
+			a += '0';
+			b += '0';
+		}
+		cout << b << ' ' << a << endl;
+		return 0;
 	}
 
-	ff0r(a, q) {
-		int l, r;
-		re(l, r);
+	
+	ll ss = s;
 
-		if (l == r) {
-			cout << k - 1 << endl;
+	int mp = 9;
+	ff0r(i, l) {
+		if (i + 1 == l) mp = s;
+		else if (s < 10) {
+			a += ts(s);
+			s = 0;
 			continue;
 		}
-
-		int total = v[l] - 1 + gap[l] + gap[r - 1] + k - v[r];
-		total += tot[r - 1] - tot[l];
-
-		cout << total << endl;
+		else while ((s - mp) / (l - i - 1) < 0) mp--;
+		s -= mp;
+		a += ts(mp);
 	}
+
+	s = ss;
+
+	mp = 1;
+	ff0r(i, l) {
+		if (i + 1 == l) mp = s;
+		else while (cdiv(s - mp, l - i - 1) > 9) {
+			mp++;
+		}
+		s -= mp;
+		b += ts(mp);
+		
+		if (i == 0) mp = 0;
+	}
+
+	cout << b << ' ' << a << endl;
+
+	return 0;
 }

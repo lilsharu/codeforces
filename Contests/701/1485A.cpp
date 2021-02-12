@@ -203,43 +203,40 @@ void setIO(string s = "") {
 	// ex. try to read letter into int
 	if (sz(s)) { setIn(s+".in"), setOut(s+".out"); } // for USACO
 }
- 
+
+ll log(ll base, ll x) {
+	if (x == 1) return INF;
+	int count = 0;
+	while (base > 0) {
+		base = base / x;
+		count++;
+	}
+	return count;
+}
+
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
-	int n, q, k;
-	re(n, q, k);
+	int n;
+	re(n);
 
-	vi v(n + 1);
+	ff0r(x, n) {
+		int a, b;
+		re(a, b);
 
-	ffor(i, 1, n + 1) {
-		cin >> v[i];
-	}
-
-	vi gap(n + 1);
-
-	ffor(i, 1, n + 1) {
-		gap[i - 1] = v[i] - v[i - 1] - 1;
-	} 
-	gap[n] = k - v[n];
-
-	vi tot(n + 1);
-
-	ff0r(i, n) {
-		tot[i + 1] = tot[i] + gap[i] + gap[i + 1];
-	}
-
-	ff0r(a, q) {
-		int l, r;
-		re(l, r);
-
-		if (l == r) {
-			cout << k - 1 << endl;
-			continue;
+		if (b > a) cout << 1 << endl;
+		else if (b == a) cout << 2 << endl;
+		else {
+			ll min = 0;
+			while (log(a, b) > log(a, b + 2) + 2) {
+				min+=2;
+				b+=2;
+			}
+			while (log(a, b) > log(a, b + 1) + 1) {
+				min++;
+				b++;
+			}
+			min += log(a, b);
+			cout << min << endl;
 		}
-
-		int total = v[l] - 1 + gap[l] + gap[r - 1] + k - v[r];
-		total += tot[r - 1] - tot[l];
-
-		cout << total << endl;
 	}
 }
