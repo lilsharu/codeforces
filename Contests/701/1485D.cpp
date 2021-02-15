@@ -203,8 +203,20 @@ void setIO(string s = "") {
 	// ex. try to read letter into int
 	if (sz(s)) { setIn(s+".in"), setOut(s+".out"); } // for USACO
 }
+
+int arr[500][500];
+int sol[500][500];
  
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
+	int n, m;
+	re(n, m);
+
+	ff0r(i, n) {
+		ff0r(j, n) {
+			re(arr[i][j]);
+		}
+	}
+
 	
 }
